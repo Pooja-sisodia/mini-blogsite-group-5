@@ -2,6 +2,9 @@ const authorModel = require("../model/authorModel")
 //const validator=require("../validator/validator")
 const { isValidName, isValidEmail, isValidPassword, isValid, isValidTitle } = require("../validator/validator")
 
+
+//============================================= Register Author ==================================================================
+
 const createAuthor = async function (req, res) {
     try {
         let data = req.body
@@ -47,6 +50,25 @@ const createAuthor = async function (req, res) {
         return res.status(500).send({ status: false, message: err.message })
     }
 }
+
+
+//============================================= Author Login ==================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
