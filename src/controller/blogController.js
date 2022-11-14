@@ -55,11 +55,6 @@ const CreateBlog = async function (req, res) {
         if (req.body.isPublished == true) {
             req.body.publishedAt = DATE
         }
-        if (!validator.isvalid(data.title)) return res.status(400).send({ status: false, msg: "title is Required" })
-        if (!validator.isvalid(data.body)) return res.status(400).send({ status: false, msg: "body is Required" })
-        if (!validator.isvalid(data.authorId)) return res.status(400).send({ status: false, msg: "authorId is Required" })
-        if (!validator.isObjectId(data.authorId)) return res.status(400).send({ status: false, msg: "author id must have 24 digits" })
-        if (!validator.isvalid(data.category)) return res.status(400).send({ status: false, msg: "category is Required" })
 
         //===================== Creation of Blog =====================//
         if (!checkTitle) {
