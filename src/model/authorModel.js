@@ -14,15 +14,15 @@ const authorSchema = new mongoose.Schema( {
         required: true,
         enum: [Mr, Mrs, Miss]
     },
-   email:{ 
+    email:{ 
     type: String,
     required: true,
     unique: true
-   },
-   password:{ 
+    },
+    password:{ 
     type: String,
     required: true,
-  },
+    },
 
 }, { timestamps: true });
 
