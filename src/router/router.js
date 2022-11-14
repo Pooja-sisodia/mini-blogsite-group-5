@@ -4,8 +4,9 @@ const authorController= require("../controller/authorController")
 const blogController= require("../controller/blogController")
 
 
-router.post("/create-author", authorController.createAuthor)
-router.post("/create-blog", blogController.createBlog)
+router.post("/create-author", authorController.authorRegister)
+router.post("/create-blog", blogController.CreateBlog)
+router.get("/",blogController.getBlog)
 
 
 

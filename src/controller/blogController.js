@@ -1,7 +1,8 @@
 const authorModel = require("../models/authorModel")
 const blogModel = require("../models/blogModel")
-const mongoose = require ("mongoose");
-const validator = require("../validator/validator")
+const mongoose = require("mongoose");
+// const validator = require("../validator/validator")
+const { isValidName, isValid, isValidObjectId } = require("../validator/validator")
 
 
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Create Blog>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
@@ -14,12 +15,13 @@ const CreateBlog = async function (req, res) {
 
 
         //=====================Checking the validation=====================//
-        if (!(title && authorId && category && body))
-            return res.status(400).send({ status: false, msg: "Please fill the Mandatory Fields." });
+        if ((!Object.keys(data)).length == 0) return res.status(400).send({ status: false, msg: "Please enter the data" })
 
         //=====================Validation of Title=====================//
         if (!isValid(title))
             return res.status(400).send({ status: false, message: "Please enter Blog Title." });
+        if (!isValidName(title)) return res.status(400).send({ status: false, msg: "Please provide characters only" })
+
 
         //=====================Validation of Blog Body=====================//
         if (!isValid(body))
@@ -39,40 +41,23 @@ const CreateBlog = async function (req, res) {
 
 
         //=====================Validation of AuthorId=====================//
-        if (!(/^[a-f\d]{24}$/i).test(authorId)) { return res.status(400).send({ status: false, message: "Please enter Correct AuthorID." }) }
+        if (!isValidObjectId(authorId)) { return res.status(400).send({ status: false, message: "Please enter Correct AuthorID." }) }
         let authorData = await authorModel.findById(authorId);
         if (!authorData) return res.status(404).send({ status: false, msg: "Author not found." });
 
 
-        //===================== Checking given AuthorID Whether It is You or Not! =====================//
-        if (authorId) {
-            if (authorId !== req.token.Payload.UserId) {
-                return res.status(403).send({ status: false, message: "You can't create someone else!! Please use your Own AuthorID." });
-            }
-        }
-
-        //===================== Checking given Published is True or False inside Body. Then publishedAt will Update the Current Date & Time When You Create Blog =====================//
-        if (req.body.isPublished == true) {
-            req.body.publishedAt = DATE
-        }
-        if (!validator.isvalid(data.title)) return res.status(400).send({ status: false, msg: "title is Required" })
-        if (!validator.isvalid(data.body)) return res.status(400).send({ status: false, msg: "body is Required" })
-        if (!validator.isvalid(data.authorId)) return res.status(400).send({ status: false, msg: "authorId is Required" })
-        if (!validator.isObjectId(data.authorId)) return res.status(400).send({ status: false, msg: "author id must have 24 digits" })
-        if (!validator.isvalid(data.category)) return res.status(400).send({ status: false, msg: "category is Required" })
-
-        //===================== Creation of Blog =====================//
-        if (!checkTitle) {
-            if (title === checkTitle.title) {
-                return res.status(400).send({ status: false, message: "Same Given Title already Exist!! You Should give another Title." });
-            }
-            let createBlog = await blogModel.create(data);
-            return res.status(201).send({ status: true, data: createBlog });
-        }
+        //         //===================== Checking given AuthorID Whether It is You or Not! =====================//
+        //         if (authorId) {
+        //             if (authorId !== req.token.Payload.UserId) {
+        //                 return res.status(403).send({ status: false, message: "You can't create someone else!! Please use your Own AuthorID." });
+        //             }
+        //         }
 
     } catch (error) {
-
         res.status(500).send({ error: error.message })
     }
 };
 
+
+
+module.exports.CreateBlog = CreateBlog
