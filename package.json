@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/Pooja-sisodia/mini-blogsite-group-5/issues"
   },
-  "homepage": "https://github.com/Pooja-sisodia/mini-blogsite-group-5#readme"
+  "homepage": "https://github.com/Pooja-sisodia/mini-blogsite-group-5#readme",
+  "dependencies": {
+    "moment": "^2.29.4"
+  }
 }
