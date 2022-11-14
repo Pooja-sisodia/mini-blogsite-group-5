@@ -63,13 +63,4 @@ const createAuthor = async function (req, res) {
 
 
 
-
-
-
-
-
-
-
-
-
 module.exports.authorRegister = createAuthor

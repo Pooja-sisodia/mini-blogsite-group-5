@@ -46,18 +46,46 @@ const CreateBlog = async function (req, res) {
         if (!authorData) return res.status(404).send({ status: false, msg: "Author not found." });
 
 
-        //         //===================== Checking given AuthorID Whether It is You or Not! =====================//
-        //         if (authorId) {
-        //             if (authorId !== req.token.Payload.UserId) {
-        //                 return res.status(403).send({ status: false, message: "You can't create someone else!! Please use your Own AuthorID." });
-        //             }
-        //         }
+        //===================== Checking given AuthorID Whether It is You or Not! =====================//
+        if (authorId) {
+            if (authorId !== req.token.Payload.UserId) {
+                return res.status(403).send({ status: false, message: "You can't create someone else!! Please use your Own AuthorID." });
+            }
+        }
 
-    } catch (error) {
+        //===================== Checking given Published is True or False inside Body. Then publishedAt will Update the Current Date & Time When You Create Blog =====================//
+        if (req.body.isPublished == true) {
+            req.body.publishedAt = DATE
+        }
+
+        //===================== Creation of Blog =====================//
+
+        let createBlog = await blogModel.create(data);
+        return res.status(201).send({ status: true, data: createBlog });
+    }
+
+    catch (error) {
         res.status(500).send({ error: error.message })
     }
 };
 
 
 
+//====================================================================================================
+
+const getBlogs = async function (req, res) {
+    try {
+        let data = req.query
+        if (!data) return res.status(400).send({ status: false, msg: "Please provide details in query" })
+        let getBlog = await blogModel.find({ isPublished: true, isDeleted: false, ...data })
+        if (!getBlog) return res.status(404).send({ status: false, msg: "No blog found" })
+        return res.status(200).send({ satus: true, msg: getBlog })
+    }
+    catch (error) {
+        res.status(500).send({ error: error.message })
+    }
+}
+
+
 module.exports.CreateBlog = CreateBlog
+module.exports.getBlog = getBlogs
