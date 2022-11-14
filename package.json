@@ -1,0 +1,19 @@
+{
+  "name": "mini-blogsite-group-5",
+  "version": "1.0.0",
+  "description": "miniBlogging-project-1/ group-5",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pooja-sisodia/mini-blogsite-group-5.git"
+  },
+  "author": "Group Projrct",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Pooja-sisodia/mini-blogsite-group-5/issues"
+  },
+  "homepage": "https://github.com/Pooja-sisodia/mini-blogsite-group-5#readme"
+}
