@@ -1,5 +1,4 @@
 const authorModel = require("../model/authorModel")
-// const validator=require("../validator/validator")
 
 
 //============================================= Register Author ==================================================================
@@ -15,35 +14,42 @@ const isValidTitle = function (title) {
     return ["Mr", "Mrs", "Miss"].indexOf(title) !== -1
 }
 
+const isValidName=function(name){
+    return (/^[a-zA-Z]+$/i).test(name)
+}
+
+
 //create a author
+
 const createAuthor = async function (req, res) {
     try {
         let data = req.body;
-        if (Object.keys(data).length === 0)                                                         //request body should not empty
-            return res.status(400).send({ status: false, message: "please enter author details" });
+        let{fname,lname,title,email,password}=data
+        if (Object.keys(data).length === 0)     //request body should not empty
+            return res.status(400).send({ status: false, message: "please enter details" });
 
-        if (!isValid(data.fname))
+        if (!isValid(fname))
             return res.status(400).send({ status: false, message: "please enter first name" });
 
-        if (!(/^[a-zA-Z]+$/i).test(data.fname))
+        if (!isValidName(fname))
             return res.status(400).send({ status: false, message: "please provide valid first name It should be in Alphabet format" });
 
-        if (!isValid(data.lname))
+        if (!isValid(lname))
             return res.status(400).send({ status: false, message: "please enter last name" });
 
-        if (!(/^[a-zA-Z]+$/i).test(data.lname))
+        if (!isValidName(lname))
             return res.status(400).send({ status: false, message: "please enter valid last name It should be in Alphabet format" });
 
-        if (!isValid(data.title))
+        if (!isValid(title))
             return res.status(400).send({ status: false, message: "please enter title" });
 
-        if (!isValidTitle(data.title))
+        if (!isValidTitle(title))
             return res.status(400).send({ status: false, message: "please enter valid title" });
-
-        if (!isValid(data.email))
+``
+        if (!isValid(email))
             return res.status(400).send({ status: false, message: "please enter email address" });
 
-        if (!/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(data.email))
+        if (!/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/.test(email))
             return res.status(400).send({ status: false, message: "please enter valid email" });
 
 
@@ -52,10 +58,10 @@ const createAuthor = async function (req, res) {
             return res.status(400).send({ status: false, message: "email already used" });
         }
 
-        if (!isValid(data.password))
+        if (!isValid(password))
             return res.status(400).send({ status: false, message: "please enter password" });
 
-        if (!/^[a-zA-Z0-9@*#]{8,15}$/.test(data.password))
+        if (!/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/.test(password))
             return res.status(400).send({ status: false, message: "Use any special character and Numbers password" });
 
         let savedData = await authorModel.create(data)
@@ -68,7 +74,7 @@ const createAuthor = async function (req, res) {
 
 
 
-
-
-
 module.exports.authorRegister = createAuthor
+
+
+
