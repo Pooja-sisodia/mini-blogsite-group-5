@@ -7,7 +7,7 @@ const mongoose = require('mongoose')
 app.use(bodyparser.json())
 
 
-mongoose.connect("mongodb+srv://PoojaFunctionUp:PA44yjApvizLJGOY@cluster0.newxzkv.mongodb.net/Pooja1508-Db?retryWrites=true&w=majority",{
+mongoose.connect("mongodb+srv://FunctionUp-Cohort_Group5:qXSbWL3JrmHVlc4W@project-1.xd5zdfo.mongodb.net/?retryWrites=true&w=majority",{
     useNewUrlParser:true
  })
  
