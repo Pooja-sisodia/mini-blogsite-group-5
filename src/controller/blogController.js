@@ -2,22 +2,26 @@ const authorModel = require("../model/authorModel")
 const blogModel = require("../model/blogModel")
 const mongoose = require("mongoose");
 
-/*================================================validating=========================================================== */
 
-const isValid= function(value){
-    if(typeof (value) === undefined || typeof (value) === null) {return false}
-    if(typeof (value) === "string" && (value).trim().length>0) {return true}
+ /*===============================================================CreateBlog================================================================*/
+
+const isValid = function (value) {
+    if (typeof (value) === undefined || typeof (value) === null) { return false }
+    if (typeof (value) === "string" && (value).trim().length > 0) { return true }
 }
 
-const isArray= function(value){
+const isValidId = function (authorId) {
+    return mongoose.Types.ObjectId.isValid(authorId);
+};
+
+
+const isArray= function(value){  // this is a function to check if the input is an array or not
     if (typeof (value) === "object") {
         value = value.filter(x => x.trim())
         if (value.length == 0) return false
         else return true
     }
 }
-
-/*================================================creatingBlog=========================================================== */
 
 const createBlog = async function (req, res) {
     try {
@@ -30,9 +34,13 @@ const createBlog = async function (req, res) {
         let {title , body , authorId, category, subcategory, tags}= data
 
 
+        if (!isValid(authorId)) return res.status(400).send({ status: false, msg: 'please provide authorId' })
+        if (!isValidId(authorId)) return res.status(400).send({ status: false, msg: 'authorId is invalid' })
+
         let idMatch = await authorModel.findById(authorId)
         // id match in author model, if not
         if (!idMatch){
+
             return res.status(404).send({ status: false, msg: "No such author present in the database" })}
 
         if (!isValid(authorId)) return res.status(400).send({ status: false, msg: 'please provide authorId' })
@@ -57,13 +65,11 @@ const createBlog = async function (req, res) {
     }
 }
 
- /*===============================================================getBlog================================================================*/
-
-const getBlogs = async function (req, res) {
+const getBlog = async function (req, res) {
     try {
         let data = req.query
         if (!data) return res.status(400).send({ status: false, msg: "Please provide details in query" })
-        let getBlog = await blogModel.find({ isPublished: true, isDeleted: false, ...data })
+        let getBlog = await blogModel.find({ isPublished: true, isDeleted: false })
         if (!getBlog) return res.status(404).send({ status: false, msg: "No blog found" })
         return res.status(200).send({ satus: true, msg: getBlog })
     }
@@ -72,7 +78,5 @@ const getBlogs = async function (req, res) {
     }
 }
 
-
 module.exports.createBlog = createBlog
-module.exports.getBlog = getBlogs
-
+module.exports.getBlog = getBlog
