@@ -7,7 +7,7 @@ const isValidName=function(name){
 }
 
 const isValidTitle=function(title){
-    return["Mr","Miss","Mrs"].indexOf(title) !== 0
+    return["Mr","Miss","Mrs"].indexOf(title) !== -1
 }
 
 const isValidEmail=function(email){
