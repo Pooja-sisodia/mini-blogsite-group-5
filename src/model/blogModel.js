@@ -14,7 +14,7 @@ body:{
     required: true,
     trim:true
 },
-author:{ 
+authorId:{ 
     type: ObjectId,
     required: true,
     ref:'authorModel'
