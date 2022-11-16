@@ -101,8 +101,8 @@ const updateBlog = async function (req, res) {
         let Tags = req.body.tags
         let Subcategory = req.body.subcategory
 
-        if (!Title) {
-            if (!isValid(Title)) return res.status(400).send({ status: false, msg: 'please provide title' })
+        if (!Title){
+            return res.status(400).send({ status: false, msg: 'please provide title' })
         }
         if (!Subcategory) {
             if (!isValid(Subcategory)) return res.status(400).send({ status: false, msg: 'please provide subcategory' })
@@ -149,7 +149,8 @@ const deleted = async function (req, res) {
             { $set: { isDeleted: true, deletedAt: new Date() } }, { new: true })
         //Sending the Deleted response after updating isDeleted : true
         return res.status(200).send({ status: true, msg: "Blog deleted succesfully" })
-    }
+        }
+
     catch (err) {
         console.log("This is the error :", err.message)
         return res.status(500).send({ status: false, msg: " Server Error", error: err.message })
