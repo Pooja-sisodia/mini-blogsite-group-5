@@ -17,8 +17,7 @@ body:{
 authorId:{ 
     type: ObjectId,
     required: true,
-    ref:'authorModel'
-    
+    ref:'authorModel' 
 },
 tags:{ 
     type: [String],

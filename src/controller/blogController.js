@@ -5,6 +5,8 @@ const ObjectId = require("mongoose").Types.ObjectId
 
 
 
+//*===============================================================CreateBlog================================================================*/
+
 const isValid = function (value) {
     if (typeof (value) === undefined || typeof (value) === null) { return false }
     if (typeof (value) === "string" && (value).trim().length > 0) { return true }

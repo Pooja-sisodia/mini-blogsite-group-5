@@ -14,7 +14,6 @@ const isValid = function (value) {
 // ===title should be one of the following constants ===
 const isValidTitle = function (title) {
     return ["Mr", "Mrs", "Miss"].indexOf(title) !== -1
-}
 
 const isValidName = function (name) {
     return /^[A-Za-z\s]{1,15}$/
@@ -67,6 +66,7 @@ exports.createAuthor = async function (req, res) {
             return res.status(400).send({ status: false, message: "please enter password" });
 
         if (!/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/.test(password))
+
             return res.status(400).send({ status: false, message: "Use any special character and Numbers password" });
 
         const salt = await bcrypt.genSalt(saltRounds)
@@ -81,6 +81,7 @@ exports.createAuthor = async function (req, res) {
     }
 }
 
+/*===================================================LoginAuthor========================================================= */
 
 // ============> Author Login Api <====================  
 exports.loginAuthor = async (req, res) => {
@@ -122,7 +123,6 @@ exports.loginAuthor = async (req, res) => {
         return res.status(500).send({ status: false, msg: "Error", error: err.message })
     }
 }
-
-
+}
 
 
