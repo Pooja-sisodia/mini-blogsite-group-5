@@ -1,6 +1,8 @@
 const authorModel = require("../model/authorModel")
 const blogModel = require("../model/blogModel")
-const mongoose = require("mongoose");
+const mongoose = require("mongoose")
+const ObjectId = require("mongoose").Types.ObjectId
+
 
 
 //*===============================================================CreateBlog================================================================*/
@@ -21,10 +23,14 @@ const isArray = function (value) {  // this is a function to check if the input 
 const isValidId = function (authorId) {
     return mongoose.Types.ObjectId.isValid(authorId);
 };
+const isValidRequest = function (request) {
+    return (Object.keys(request).length > 0)
+}
+
 
 
 //====================================================================================================
-const createBlog = async function (req, res) {
+exports.createBlog = async function (req, res) {
     try {
         let data = req.body
         
@@ -66,7 +72,7 @@ const createBlog = async function (req, res) {
     }
 }
 
-const getBlog = async function (req, res) {
+exports.getBlogs = async function (req, res) {
     try {
         let data = req.query
         if (!data) return res.status(400).send({ status: false, msg: "Please provide details in query" })
@@ -81,26 +87,26 @@ const getBlog = async function (req, res) {
 }
 
 
-const updateBlog = async function (req, res) {
+exports. updateBlog = async function (req, res) {
     try {
-        //Validate: The blogId is present in request path params or not.
-        let blog_Id = req.params.blogId  // in database only id is present not blogId so how id is getting matched with blogId it is because of the name of the variable in the router.js
-        if (!blog_Id) return res.status(400).send({ status: false, msg: "Blog Id is required" })
+        const requestBody = req.body
+        const blogId = req.params.blogId
+        const authorToken = req.authorId
 
-        //Validate: The blogId is valid or not.
-        let blog = await blogModel.findById(blog_Id)
-        if (!blog) return res.status(404).send({ status: false, msg: "Blog does not exists" })
+        // ID validation
+        if (!ObjectId.isValid(blogId)) return res.status(400).send({ status: false, msg: "Not a valid BLOG ID" })
+        // if (!ObjectId.isValid(authorToken)) return res.status(400).send({ status: false, msg: "Not a valid author id from token." })
+        // Id verification
+        const blogDetails = await blogModel.findOne({ _id: blogId, isDeleted: false, deletedAt: null })
+        if (!blogDetails) return res.status(404).send({ status: false, msg: "Blog not found." })
 
-        //Validate: If the blogId exists (must have isDeleted false)
-        let is_Deleted = blog.isDeleted
-        if (is_Deleted == true) return res.status(404).send({ status: false, msg: "Blog is already deleted" })
+        // if (blogDetails.authorId.toString() != authorToken) return res.status(403).send({ status: false, message: "Unauthorize Access." })
+        if (!isValidRequest(requestBody)) return res.status(400).send({ status: false, message: "No input by user for update." })
 
-        //Updates a blog by changing the its title, body, adding tags, adding a subcategory.
-        let Title = req.body.title
-        let Body = req.body.body
-        let Tags = req.body.tags
-        let Subcategory = req.body.subcategory
+        const { title, body, tags, category, subcategory, isPublished } = requestBody
+        const updatedBlog = {}
 
+<<<<<<< HEAD
         if (!Title){
             return res.status(400).send({ status: false, msg: 'please provide title' })
         }
@@ -112,25 +118,65 @@ const updateBlog = async function (req, res) {
         }
         if (!Body) {
             if (!isValid(Body)) return res.status(400).send({ status: false, msg: 'please provide body' })
+=======
+        if (isValid(title)) {
+            if (!Object.prototype.hasOwnProperty.call(updatedBlog, '$set'))
+                updatedBlog['$set'] = {}
+            updatedBlog['$set']['title'] = title
+>>>>>>> 59d2fda5f10010d8d4e7a1d140ab710d7ef8e9c5
         }
 
+        if (isValid(body)) {
+            if (!Object.prototype.hasOwnProperty.call(updatedBlog, '$set'))
+                updatedBlog['$set'] = {}
+            updatedBlog['$set']['body'] = body
+        }
 
-        let updatedBlog = await blogModel.findOneAndUpdate({ _id: blog_Id },
-            {
-                $set: { title: Title, body: Body, isPublished: true, publishedAt: new Date() },
-                $addToSet: { subcategory: Subcategory, tags: Tags }
-            }, { new: true })
-        //Sending the updated response
-        return res.status(200).send({ status: true, data: updatedBlog })
-    }
-    catch (err) {
-        console.log("This is the error :", err.message)
-        return res.status(500).send({ status: false, msg: " Server Error", error: err.message })
+        if (isValid(category)) {
+            if (!Object.prototype.hasOwnProperty.call(updatedBlog, '$set'))
+                updatedBlog['$set'] = {}
+            updatedBlog['$set']['category'] = category
+        }
+
+        if (isValid(isPublished)) {
+            if (!Object.prototype.hasOwnProperty.call(updatedBlog, '$set'))
+                updatedBlog['$set'] = {}
+            updatedBlog['$set']['isPublished'] = isPublished
+            updatedBlog['$set']['publishedAt'] = isPublished ? new Date() : null
+        }
+
+        if (isValid(tags)) {
+            if (!Object.prototype.hasOwnProperty.call(updatedBlog, '$addToSet'))
+                updatedBlog["$addToSet"] = {}
+            if (Array.isArray(tags)) {
+                updatedBlog['$addToSet']['tags'] = { $each: [...tags] }
+            }
+            if (typeof tags === 'string') {
+                updatedBlog['$addToSet']['tags'] = tags
+            }
+        }
+
+        if (isValid(subcategory)) {
+            if (!Object.prototype.hasOwnProperty.call(updatedBlog, '$addToSet'))
+                updatedBlog["$addToSet"] = {}
+            if (Array.isArray(subcategory)) {
+                updatedBlog['$addToSet']['subcategory'] = { $each: [...subcategory] }
+            }
+            if (typeof subcategory === 'string') {
+                updatedBlog['$addToSet']['subcategory'] = subcategory
+            }
+        }
+
+        const validUpdatedBlog = await blogModel.findOneAndUpdate({ _id: blogId }, updatedBlog, { new: true })
+        res.status(200).send({ status: true, message: "Updated Succesfully", data: validUpdatedBlog })
+
+    } catch (err) {
+        return res.status(500).send({ status: false, msg: err.message });
     }
 }
 
 
-const deleted = async function (req, res) {
+exports. deleted = async function (req, res) {
     try {
         //Validate: The blogId is present in request path params or not.
         let blog_Id = req.params.blogId
@@ -158,7 +204,7 @@ const deleted = async function (req, res) {
 }
 
 
-const deleteByQuery = async function (req, res) {
+exports. deleteByQuery = async function (req, res) {
     try {
         const data = req.query
         const category = req.query.category
@@ -190,8 +236,3 @@ const deleteByQuery = async function (req, res) {
     }
 }
 
-module.exports.createBlog = createBlog
-module.exports.updateBlog = updateBlog
-module.exports.deleted = deleted
-module.exports.Qdeleted = deleteByQuery
-module.exports.getBlog = getBlog
