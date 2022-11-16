@@ -14,6 +14,7 @@ const isValid = function (value) {
 // ===title should be one of the following constants ===
 const isValidTitle = function (title) {
     return ["Mr", "Mrs", "Miss"].indexOf(title) !== -1
+}
 
 const isValidName = function (name) {
     return /^[A-Za-z\s]{1,15}$/
@@ -123,6 +124,6 @@ exports.loginAuthor = async (req, res) => {
         return res.status(500).send({ status: false, msg: "Error", error: err.message })
     }
 }
-}
+
 
 

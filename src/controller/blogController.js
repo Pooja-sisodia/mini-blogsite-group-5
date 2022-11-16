@@ -106,24 +106,10 @@ exports. updateBlog = async function (req, res) {
         const { title, body, tags, category, subcategory, isPublished } = requestBody
         const updatedBlog = {}
 
-<<<<<<< HEAD
-        if (!Title){
-            return res.status(400).send({ status: false, msg: 'please provide title' })
-        }
-        if (!Subcategory) {
-            if (!isValid(Subcategory)) return res.status(400).send({ status: false, msg: 'please provide subcategory' })
-        }
-        if (!Tags) {
-            if (!isValid(Tags)) return res.status(400).send({ status: false, msg: 'please provide tags' })
-        }
-        if (!Body) {
-            if (!isValid(Body)) return res.status(400).send({ status: false, msg: 'please provide body' })
-=======
         if (isValid(title)) {
             if (!Object.prototype.hasOwnProperty.call(updatedBlog, '$set'))
                 updatedBlog['$set'] = {}
             updatedBlog['$set']['title'] = title
->>>>>>> 59d2fda5f10010d8d4e7a1d140ab710d7ef8e9c5
         }
 
         if (isValid(body)) {
@@ -174,8 +160,7 @@ exports. updateBlog = async function (req, res) {
         return res.status(500).send({ status: false, msg: err.message });
     }
 }
-
-
+//====================================================deletedById  BlogId==========================================//
 exports. deleted = async function (req, res) {
     try {
         //Validate: The blogId is present in request path params or not.
@@ -195,13 +180,13 @@ exports. deleted = async function (req, res) {
             { $set: { isDeleted: true, deletedAt: new Date() } }, { new: true })
         //Sending the Deleted response after updating isDeleted : true
         return res.status(200).send({ status: true, msg: "Blog deleted succesfully" })
-        }
-
+    }
     catch (err) {
         console.log("This is the error :", err.message)
         return res.status(500).send({ status: false, msg: " Server Error", error: err.message })
     }
 }
+
 
 
 exports. deleteByQuery = async function (req, res) {

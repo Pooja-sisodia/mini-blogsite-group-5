@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-=======
+
 const blogModel = require('../model/blogModel');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose')
@@ -72,4 +71,4 @@ catch (err) {
 
 
 
->>>>>>> 59d2fda5f10010d8d4e7a1d140ab710d7ef8e9c5
+
