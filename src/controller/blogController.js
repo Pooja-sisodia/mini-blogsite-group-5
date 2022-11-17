@@ -79,6 +79,9 @@ exports.createBlog = async(req, res)=> {
       if (data["isPublished"] == true) {
           data["publishedAt"] = Date.now();
       };
+      if (data["isDeleted"] == true) {
+        data["deletedAt"] = Date.now();
+    };
       let createBlogs = await blogModel.create(data);
           res.status(201).send({status:true,msg:"Blogs created successfully",data: createBlogs});    
     } catch (err) {
@@ -89,10 +92,6 @@ exports.createBlog = async(req, res)=> {
 exports.getBlogs = async (req, res) => {
     try {
       let data=req.query;  
-      if (Object.keys(data).length==0){ 
-        return res.status(400).send({status:false,msg:"Provide atleast one Query to fetch blog details"});
-      };
-    
       let {category, authorId, tags, subcategory}=data;
       let filter={isDeleted:false, isPublished:true};
     
