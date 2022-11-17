@@ -18,7 +18,7 @@ const isValidTitle = function (title) {
 }
 
 const isValidName = function (name) {
-    return /^[A-Za-z\s]{1,15}$/
+    return  /^[a-zA-Z ]+$/
     .test(name)
 
 }

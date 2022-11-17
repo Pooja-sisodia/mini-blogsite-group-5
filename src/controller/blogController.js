@@ -86,20 +86,55 @@ exports.createBlog = async(req, res)=> {
     };
   };
 //=======================================================GetBlogs===============================================================//
-
-exports.getBlogs = async function (req, res) {
+exports.getBlogs = async (req, res) => {
     try {
-        let data = req.query
-        if (!data) return res.status(400).send({ status: false, msg: "Please provide details in query" })
-        let getBlog = await blogModel.find({ isPublished: true, isDeleted: false })
-        if (!getBlog) return res.status(404).send({ status: false, msg: "No blog found" })
-        return res.status(200).send({ satus: true, msg: getBlog })
+      let data=req.query;  
+      if (Object.keys(data).length==0){ 
+        return res.status(400).send({status:false,msg:"Provide atleast one Query to fetch blog details"});
+      };
+    
+      let {category, authorId, tags, subcategory}=data;
+      let filter={isDeleted:false, isPublished:true};
+    
+      if(category || category==""){
+        if (!isValid(category)) {
+          return res.status(400).send({status:false,msg:"category must be present"});
+        };
+        filter.category=category;
+      };
+      if(authorId || authorId==""){
+        if(!isValid(authorId)){
+          return res.status(400).send({status:false,msg:"authorId must be present"});
+        };
+        if (!isValidId(authorId)){
+          return res.status(400).send({status:false,msg:"Invalid blogId"});
+        };
+        filter.authorId=authorId;
+      };
+      if(tags){
+        if(tags.trim().length==0){
+          return res.status(400).send({status:false,msg:"Enter valid tags"});
+        };
+        tags=tags.split(",")
+        filter.tags={$in:tags}
+      };
+      if(subcategory) {
+        if(subcategory.trim().length==0){
+          return res.status(400).send({status:false,msg:"Enter valid subcategory"});
+        };
+        subcategory=subcategory.split(",")
+        filter.subcategory={$in:subcategory}
+      };
+      let fetchBlogs=await blogModel.find(filter);
+      if(fetchBlogs.length==0){
+        return res.status(404).send({status:false,msg:"Such Blogs Not Available" })
+      }  
+        return res.status(200).send({status:true,data:fetchBlogs});
+    } catch (err) {
+      res.status(500).send({ status: false, error: err.message });
     }
-    catch (error) {
-        console.log(error)
-        return res.status(500).send({ msg: error.message })
-    }
-}
+  };
+
 
 //=======================================================Update===============================================================//
 
@@ -205,40 +240,6 @@ exports. deleteByQuery = async function (req, res) {
     }
 }
 
-//=================================================================================================================================//
-
-const getBlog = async function (req, res) {
-    try {
-        let obj = { isDeleted: false, isPublished: true }
-        //- By author Id
-        let authorId = req.query.authorId
-        let category = req.query.category
-        let tags = req.query.tags
-        let subcategory = req.query.subcategory
-        if (authorId) {
-            if(!mongoose.isValidObjectId(authorId)){return res.status(400).send({ status: false, msg: "authorId is not in format"})}
-            else {
-                if (!await authorModel.findById(authorId)) {
-                    return res.status(400).send({ status: false, msg: "Author is with this id not in database" })
-                }
-            }
-        }
-        if (authorId) { obj.authorId = authorId }
-        if (category) { obj.category = category }
-        if (tags) { obj.tags = tags }
-        if (subcategory) { obj.subcategory = subcategory }
-
-        let saveData = await blogModel.find(obj)
-        if (saveData.length == 0) {
-            return res.status(404).send({ status: false, msg: "No document found with this filter" })
-        }
-        return res.status(200).send({ status: true, data: saveData })
-    }
-    catch (err) {
-        console.log(err.message)
-        return res.status(500).send({ status: false, msg: err.message })
-    }
-}
 
 
 
