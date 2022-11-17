@@ -25,29 +25,6 @@ exports.authentication = async function(req, res, next){
 
 
 
-// exports.authentication = async function (req, res, next) {
-//     try {
-//         let token = req.headers["x-api-key"]
-//         //If no token is present in the request header return error. This means the user is not logged in.
-//         if (!token){
-//             return res.status(400).send({ status: false, msg: "token must be present" });
-//         }
-//         decodedToken = jwt.verify(token, "functionUp-project1",(error,decodedToken)=>{
-//             if(error){
-//                 return res.status(401).send({status:false,message:"token is not valid"})
-//             }
-//             req.authorId = decodedToken.authorId
-//             //Set an attribute in request object 
-//             next();
-//         })
-       
-//     }
-//     catch (error) {
-//         console.log(error.message)
-//         res.status(500).send({ status: false, msg: error.message })
-//     }
-// };
-
 // =============================================== Authorization =======================================================//
 exports.authorize = async function (req, res, next) {
   try {

@@ -163,8 +163,7 @@ exports. deleted = async function (req, res) {
             { $set: { isDeleted: true, deletedAt: new Date() } }, { new: true })
         //Sending the Deleted response after updating isDeleted : true
         return res.status(200).send({ status: true, msg: "Blog deleted succesfully" })
-        }
-
+    }
     catch (err) {
         console.log("This is the error :", err.message)
         return res.status(500).send({ status: false, msg: " Server Error", error: err.message })
@@ -172,6 +171,7 @@ exports. deleted = async function (req, res) {
 }
 
 //=======================================================DeleteByQuery===============================================================//
+
 
 exports. deleteByQuery = async function (req, res) {
     try {
