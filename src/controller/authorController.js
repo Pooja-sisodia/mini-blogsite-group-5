@@ -2,8 +2,9 @@ const authorModel = require("../model/authorModel")
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
-//============================================= Register Author ==================================================================
 
+
+//============================================= Register Author ==================================================================
 
 const isValid = function (value) {
     if (typeof value === "string" && value.trim().length === 0) return false
@@ -14,6 +15,7 @@ const isValid = function (value) {
 // ===title should be one of the following constants ===
 const isValidTitle = function (title) {
     return ["Mr", "Mrs", "Miss"].indexOf(title) !== -1
+}
 
 const isValidName = function (name) {
     return /^[A-Za-z\s]{1,15}$/
@@ -22,7 +24,7 @@ const isValidName = function (name) {
 }
 
 
-//create a author
+//====================================================create a author================================================//
 
 exports.createAuthor = async function (req, res) {
     try {
@@ -83,25 +85,24 @@ exports.createAuthor = async function (req, res) {
 
 /*===================================================LoginAuthor========================================================= */
 
-// ============> Author Login Api <====================  
 exports.loginAuthor = async (req, res) => {
     try {
         email = req.body.email;
         password = req.body.password;
 
-        //===============================================user email  id is requires=============================================      
+        //===============================================user email  id is requires===================================================//      
         if (!email) return res.status(400).send({ status: false, msg: "email id is required" })
 
-        //==============================================  Password is required ==================================================     
+        //=================================================Password is required ======================================================//     
         if (!password) return res.status(400).send({ status: false, msg: "Password is required" })
 
-        //==============================================checking the email id or password is exist or not ============================      
+        //==============================================checking the email id or password is exist or not ===========================//     
         let getUser = await authorModel.findOne({ email: email }).select({ password: 1 })
 
-        //============================================  User not found===========================================================     
+        //================================================User not found==============================================================//    
         if (Object.keys(getUser).length == 0) return res.status(404).send({ status: false, msg: "User not found" })
 
-        //========================================password matching by bcrypt.compare method password comeparing ===================================       
+        //========================================password matching by bcrypt.compare method password comeparing ==================================//      
         const matchPassword = await bcrypt.compare(password, getUser.password)
         if (!matchPassword) return res.status(401).send({ status: false, msg: "Password is incorrect" })
 
@@ -115,7 +116,7 @@ exports.loginAuthor = async (req, res) => {
             return res.status(400).send({ status: false, msg: "Error", error: err.message })
         }
 
-        //   =======================================================setHeader with some information =========================
+//====================================================setHeader with some information ======================================================//
         res.setHeader("x-api-key", token);
         return res.status(201).send({ status: true, msg: "User login sucessful", token })
     }
@@ -123,6 +124,6 @@ exports.loginAuthor = async (req, res) => {
         return res.status(500).send({ status: false, msg: "Error", error: err.message })
     }
 }
-}
+
 
 

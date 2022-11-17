@@ -1,52 +1,54 @@
-<<<<<<< HEAD
-=======
 const blogModel = require('../model/blogModel');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose')
 const ObjectId = require("mongoose").Types.ObjectId
 
-// =============> Authentication <================================
-// exports.authentication = async function(req, res, next){
-//   try {
-//     let token = req.headers["x-api-key"]
-//     if (!token) token = req.headers["X-Api-Key"]
-//     if (!token) return res.status(400).send({ status: false, msg: "Token is required" })
-//     try {
-//         decodeToken = jwt.verify(token, "functionUp-project1")
-//     } catch (err) {
-//         return res.status(401).send({ status: false, msg: "Error", error: err.message })
-//     }
-//     next()
-// } catch (err) {
-//     return res.status(500).send({ status: false, msg: "Error", error: err.message })
-// }
-// }
 
 
-exports.authentication = async function (req, res, next) {
+//=============================================== Authentication <=============================================//
+
+exports.authentication = async function(req, res, next){
+  try {
+    let token = req.headers["x-api-key"]
+    if (!token) token = req.headers["X-Api-Key"]
+    if (!token) return res.status(400).send({ status: false, msg: "Token is required" })
     try {
-        let token = req.headers["x-api-key"]
-        //If no token is present in the request header return error. This means the user is not logged in.
-        if (!token){
-            return res.status(400).send({ status: false, msg: "token must be present" });
-        }
-        jwt.verify(token, "functionUp-project1",(error,decodedToken)=>{
-            if(error){
-                return res.status(401).send({status:false,message:"token is not valid"})
-            }
-            req.authorId = decodedToken.authorId
-            //Set an attribute in request object 
-            next();
-        })
-       
+        decodeToken = jwt.verify(token, "functionUp-project1")
+    } catch (err) {
+        return res.status(401).send({ status: false, msg: "Error", error: err.message })
     }
-    catch (error) {
-        console.log(error.message)
-        res.status(500).send({ status: false, msg: error.message })
-    }
-};
+    next()
+} catch (err) {
+    return res.status(500).send({ status: false, msg: "Error", error: err.message })
+}
+}
 
-// =============> Authorization <================================
+
+
+// exports.authentication = async function (req, res, next) {
+//     try {
+//         let token = req.headers["x-api-key"]
+//         //If no token is present in the request header return error. This means the user is not logged in.
+//         if (!token){
+//             return res.status(400).send({ status: false, msg: "token must be present" });
+//         }
+//         decodedToken = jwt.verify(token, "functionUp-project1",(error,decodedToken)=>{
+//             if(error){
+//                 return res.status(401).send({status:false,message:"token is not valid"})
+//             }
+//             req.authorId = decodedToken.authorId
+//             //Set an attribute in request object 
+//             next();
+//         })
+       
+//     }
+//     catch (error) {
+//         console.log(error.message)
+//         res.status(500).send({ status: false, msg: error.message })
+//     }
+// };
+
+// =============================================== Authorization =======================================================//
 exports.authorize = async function (req, res, next) {
   try {
     let blogId = req.params.blogId || req.query.authorId.category.tags.subcategory
@@ -64,12 +66,3 @@ catch (err) {
 }
 }
 
-
-
-
-
-
-
-
-
->>>>>>> 59d2fda5f10010d8d4e7a1d140ab710d7ef8e9c5
